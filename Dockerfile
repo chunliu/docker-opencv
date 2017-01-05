@@ -17,10 +17,10 @@ RUN apt-get update && apt-get upgrade -y \
 
 WORKDIR /code
 
-# Configure python
+# Configure python3
 RUN wget -q https://bootstrap.pypa.io/get-pip.py \
-    && python3 get-pip.py
-RUN pip install numpy
+    && python3 get-pip.py \
+    && pip install numpy
 
 # Download and build OpenCV source code
 RUN wget -q -O opencv.zip https://github.com/opencv/opencv/archive/3.2.0.zip \  
@@ -40,6 +40,9 @@ RUN wget -q -O opencv.zip https://github.com/opencv/opencv/archive/3.2.0.zip \
     && make -j4 \
     && make install && ldconfig
 
+# Post build processing: rename the file and do cleaning
 WORKDIR /
-
-RUN rm -rf /code
+ADD postbuildprocessing.sh /postbuildprocessing.sh
+RUN /bin/sh /postbuildprocessing.sh \
+    && rm -rf /code \
+    && rm -rf /postbuildprocessing.sh
