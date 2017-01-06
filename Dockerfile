@@ -1,12 +1,12 @@
 FROM ubuntu:16.04
 
-MAINTAINER Chun Liu
+MAINTAINER Chun Liu <https://github.com/chunliu>
 
-LABEL Version="0.2" OpenCV="3.2.0" Description="This image can be used as a base image for applications based on OpenCV."
+LABEL Version="0.3" OpenCV="3.2.0" Description="This image can be used as a base image for applications based on OpenCV."
 
 # Install all necessary packages for OpenCV
 # Use python3 to build the source code
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update \
     && apt-get install -y wget unzip git build-essential cmake pkg-config \
             libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev \
             libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
@@ -40,7 +40,7 @@ RUN wget -q -O opencv.zip https://github.com/opencv/opencv/archive/3.2.0.zip \
     && make -j4 \
     && make install && ldconfig
 
-# Post build processing: rename the file and do cleaning
+# Post build processing: rename the file to cv2.so and do cleaning
 WORKDIR /
 ADD postbuildprocessing.sh /postbuildprocessing.sh
 RUN /bin/sh /postbuildprocessing.sh \
